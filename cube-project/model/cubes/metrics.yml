@@ -1,0 +1,28 @@
+cubes:
+  - name: metrics
+    sql_table: public.metrics
+    data_source: default
+
+    joins: []
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: name
+        sql: name
+        type: string
+
+      - name: timestamp
+        sql: timestamp
+        type: time
+
+    measures:
+      - name: count
+        type: count
+
+      - name: total_value
+        sql: value
+        type: sum
