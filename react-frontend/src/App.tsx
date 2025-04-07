@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PieChart from "./components/PieChart.tsx";
 import BarChart from "./components/BarChart.tsx";
 import LineChart from "./components/LineChart.tsx";
+import Dashboard from "./components/Dashboard.tsx";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
             />
           }
         />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   );
