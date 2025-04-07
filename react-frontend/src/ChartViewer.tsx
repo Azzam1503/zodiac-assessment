@@ -8,13 +8,18 @@ interface ChartViewerProps {
   resultSet: ResultSet;
   pivotConfig: PivotConfig;
   chartType: ChartType;
+  title?: string;
 }
 
 export function ChartViewer(props: ChartViewerProps) {
-  const { resultSet, pivotConfig, chartType } = props;
+  const { resultSet, pivotConfig, chartType, title } = props;
 
   const data = {
-    labels: resultSet.chartPivot(pivotConfig).map((row) => formatDate(row.x)),
+    labels: resultSet.chartPivot(pivotConfig).map((row) => {
+      const value = row.x;
+      const parsedDate = new Date(value);
+      return !isNaN(parsedDate.getTime()) ? formatDate(value) : value;
+    }),
     datasets: resultSet.series(pivotConfig).map((item) => {
       return {
         fill: chartType === "area",
@@ -40,7 +45,19 @@ export function ChartViewer(props: ChartViewerProps) {
         display: true,
         position: "top" as const,
       },
+      title: {
+        display: !!title,
+        text: title,
+        font: {
+          size: 18,
+        },
+        padding: {
+          top: 10,
+          bottom: 30,
+        },
+      },
     },
+
     scales: {
       x: {
         ticks: {

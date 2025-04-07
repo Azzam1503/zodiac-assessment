@@ -15,11 +15,23 @@ const App = () => {
         />
         <Route
           path="/bar"
-          element={<BarChart filters={[]} timeDimensions={[]} />}
+          element={
+            <BarChart
+              filters={[]}
+              timeDimensions={[]}
+              dimensions={["metrics.name"]}
+            />
+          }
         />
         <Route
           path="/pie"
-          element={<PieChart filters={[]} timeDimensions={[]} />}
+          element={
+            <PieChart
+              filters={[]}
+              timeDimensions={[]}
+              dimensions={["metrics.name"]}
+            />
+          }
         />
       </Routes>
     </BrowserRouter>

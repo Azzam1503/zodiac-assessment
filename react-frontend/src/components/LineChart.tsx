@@ -11,6 +11,7 @@ import { extractHashConfig } from "../config";
 import { QueryRenderer } from "../QueryRenderer.tsx";
 import { ChartType, Config } from "../type";
 import ChartLayout from "./Layout.tsx";
+import { useState } from "react";
 
 type Props = {
   filters: Filter[];
@@ -18,6 +19,10 @@ type Props = {
 };
 
 function LineChart({ filters, timeDimensions }: Props) {
+  const [granularity, setGranularity] = useState<
+    "day" | "week" | "month" | "year"
+  >("week");
+
   const {
     apiUrl,
     apiToken,
@@ -51,23 +56,51 @@ function LineChart({ filters, timeDimensions }: Props) {
     filters: filters.length > 0 ? filters : query.filters || [],
     timeDimensions: timeDimensions?.length
       ? timeDimensions
-      : query.timeDimensions || [],
+      : [
+          {
+            dimension: "metrics.timestamp",
+            granularity,
+          },
+        ],
   };
 
+  function handleGranularityChange(
+    event: React.ChangeEvent<HTMLSelectElement>
+  ): void {
+    setGranularity(event.target.value as "day" | "week" | "month" | "year");
+  }
+
   return (
-    <ChartLayout>
-      <CubeProvider cubeApi={cubeApi}>
-        <QueryRenderer query={configuredQuery} subscribe={useSubscription}>
-          {({ resultSet }) => (
-            <ChartViewer
-              chartType={chartType}
-              resultSet={resultSet}
-              pivotConfig={pivotConfig}
-            />
-          )}
-        </QueryRenderer>
-      </CubeProvider>
-    </ChartLayout>
+    <div>
+      <div className="w-full max-w-xs absolute top-45 left-200">
+        <select
+          id="granularity"
+          value={granularity}
+          onChange={handleGranularityChange}
+          className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
+      <ChartLayout>
+        <CubeProvider cubeApi={cubeApi}>
+          {/* Add the select tag above the chart title */}
+          <QueryRenderer query={configuredQuery} subscribe={useSubscription}>
+            {({ resultSet }) => (
+              <ChartViewer
+                chartType={chartType}
+                resultSet={resultSet}
+                pivotConfig={pivotConfig}
+                title="Value distribution over timestamp"
+              />
+            )}
+          </QueryRenderer>
+        </CubeProvider>
+      </ChartLayout>
+    </div>
   );
 }
 

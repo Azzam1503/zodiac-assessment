@@ -15,9 +15,10 @@ import ChartLayout from "./Layout.tsx";
 type Props = {
   filters: Filter[];
   timeDimensions?: TimeDimension[];
+  dimensions?: string[];
 };
 
-function BarChart({ filters, timeDimensions }: Props) {
+function BarChart({ filters, timeDimensions, dimensions }: Props) {
   const {
     apiUrl,
     apiToken,
@@ -49,9 +50,10 @@ function BarChart({ filters, timeDimensions }: Props) {
   const configuredQuery: Query = {
     ...query,
     filters: filters.length > 0 ? filters : query.filters || [],
-    timeDimensions: timeDimensions?.length
-      ? timeDimensions
-      : query.timeDimensions || [],
+    timeDimensions: timeDimensions?.length ? timeDimensions : [],
+    dimensions: dimensions?.length
+      ? dimensions
+      : query.dimensions || ["metrics.name"],
   };
 
   return (
@@ -63,6 +65,7 @@ function BarChart({ filters, timeDimensions }: Props) {
               chartType={chartType}
               resultSet={resultSet}
               pivotConfig={pivotConfig}
+              title="Value distribution over Name"
             />
           )}
         </QueryRenderer>
